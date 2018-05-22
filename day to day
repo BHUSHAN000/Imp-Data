@@ -1,0 +1,139 @@
+currently I am working with astart up organization in a hadoop POC project.
+For more than 2 years I was working for IT Jango Pangosupport. 
+However, Management decided to move me to a new project called big data project. 
+As You know for a POC you have to do a lot of documentation and it all begun with internal hadoop training in 2013 Dec,
+which cleared my concepts of OLAP & OLTP and different perspectives of big data.
+Like as You Know there are multiple perspectives of big data, First is that, Data is growing globally in volume,velocity, and variety which organisations need tostore and process.
+Second  aspect is that, Any data which can not be processed in a traditionalsystems is considered as big data.
+ Third aspect is that, Data residing on Archivals like Tape Drives is bigger insize in-comparison with OLTP. 
+When Our Team realized that hadoop project is a great Opportunity We took complete responsibility of the task that was given to us.
+To be very precise, I was given around 16 To Do tasks Officially andsome of the task I loved doing it voluntarily.
+In short the project initially started with a target in mind that was about finding insights in our dead data, that is residing in data warehouse archivals.
+Later on our Management became more demanding and wanted an in-build system for predictive analytics, 
+which actually means, that we had to move from economical storage and batch processing model to the real time query and real time delivery model.
+where high availability,scalability, polyglot persistence of (NoSQL) databases with machine learning etc, will be deployed in the hadoop ecosystem,.
+After Completing the POC our organisation has Moved the project to a Germany Unit of Big-Data, Managements decision! Always Respected. 
+However, First let me tell you what We as a Team, had to decide on which hadoop deployment should we go for,
+So we took help from business media like Forbes, Forresters, and International Data Corporation (IDC) after going throughsome White Papers and webinars. Our decision  and path was clear of going with the Cloudera, However
+ Firstly we begun our journey with Apache hadoop to play with the nuts and bolts of hadoop internals that is the best thing to do.
+Next challenge was to deploy it, either in-house or in the cloud, Ultimately,
+We decided to go with cloud Platform As A service, because our IT Infrastructure had no servers for us to work upon and POC budget was quit low.
+As you know the best cloud option in the industry is AWS, we started with deploying single node hadoop cluster on EC2, for development team, now... 
+To get there we configured multiple Linuxsystems and realised that deploying RHEL will mean that disabling selinux, ipv6, Iptables and networking options is extra work for us, unlike Ubuntu server, which happens to be the best match for hadoop, however both are POSIX compliance Operating systems.  We can also deploy a RedHat Namenode and CentOS Data Nodes Cluster, to get support on our meta data Node that is also best practice. 
+Then next challenge was to choose which JVM, the Openjdk or the Oraclejdk or the Ibmjdk, however that was easy to decide  after we tried all and finalised oraclejdk stable jre7.
+That was because we ran the POC with Cloudera, Horton-works, Mapr, Emc2, Ibm, and Apache Hadoop.
+New thing we learned here that cloudera is the most Experienced in the Hadoop support.
+Then we started following the documents from Apache and Cloudera some times even Horton-works, this was getting very messy for the management to understand the need for speed.
+Since we worked on different sandboxes, and concluded the cloudera as the best option to go with, not only because it has kept it open-source, but it has also kept it simple and collaborated with giants like oracle, Aws and intel etc.
+Configuring xml's are the part and parcel of hadoop ecosystem like core-site.xml, hdfs-site.xml, mapred-site.xml. 
+My responsibilities were to Configure hadoop services like Namenode, Datanode, Jobtracker,  Tasktracker.
+In the environment like Cloud usually Commissioning of Data Node is taken care by Autoscaling Feature & Decommissioning the Hadoop Node is usually not required.
+We had two options to go with one was the EMR and other was Cloudera,s distribution, We already had Cloudera Licenceso,... 
+We deployed 12 Node Production Cluster in the AWS Cloud with CPU optimised EC2 with Cloudera manager, that was on March 2nd 2014, 
+In Which 1 node for Cloudera manager, 3 nodes for Zookeeper,since it is asmall cluster with 6 data nodes, to utilize the cluster to optimal, for high availability we had 1 fail-over name nodes, at two availability zones in the ire-land Data-Center.
+You must be thinking that the purpose of data localisation is not met in this case isin't, howevers3 gives you 119 durability. 
+Design of data life cycle issuch that it will be first loaded on tos3 and then loaded on hdfs for processing, then any data that has been analysed that has veracity in it will be moved to the glaciers.(like in traditionalsystems we purge it to tape drives)
+After the data is on HDFS, based on requirements like meta-data model, ELT types and processes will execute to de-normalize, pre-compute, pre-aggregate and format dataso that it can be easily analysed, as you know. 
+Finally data is in hivestores for Tableau reports, to be developed as per requirement and published on Tableauserver present within Hadoop environment, that is purely done by the BI Team.
+However, the Big Question here is what was I doing as an hadoop administrator, 
+My core responsibilities, were always changing but what comes to my mind right now is that I use to 
+Identify and monitor CPU usage on master node. 
+Analyze the NameNode and JobTracker Web UIs.
+Loading data into the cluster from dynamically-generated files using Flume and from RDBMS usingsqoop, also from the local filesystem to the Hadoop cluster.
+Increasing Priority for Jobsometimes there is a user request to increase the priority of jobs on production This is doneso that the job running can get mappers and reducers prior to other jobs running atsame time  Eg : mapred job -set-priority job_201306081603_990673 VERY_HIGH Valid values for priorities are: VERY_HIGH,  HIGH,  NORMAL , LOW,  VERY_LOW
+Job hang on integraton/production : While monitoring jobtracker we also check the hung jobs. 
+I observe them when their counters are not increasing and job is not in progress from long time. This can happen due to connectivity issues, dataskewness etc.
+I drop Raise alarms to corresponding teams as per batch user ids. Usually reporting teams ask me kill the job.
+Data migration from production to integration using distcp command (succeed request)
+Sometimes application teams require production data on integration cluster for developing or testing code.
+Execute :sudo command -sudo -u hdshc –i 
+# Hadoop distcp  <source_url> <destination_url%%>
+(when we have to move from cdh3 to cdh4)hadoop  distcp 
+hftp://<source_namenode_name>:<port>/<path> 
+hdfs://<destination_namenode_name>:<port>/<path>
+Data migration from integration to production using distcp command CCMDB request)
+Sometimes application teams need development data of production cluster for production 
+application requirement.
+Monitoring hadoop integration and production Job-Tracker and DFS-Health portal
+=>We basically looks for clustershould have all the nodes responsive. Black listed nodes
+shows nodes are not taking any request. We need to restart task trackers manually.
+=> We are also checking what is percent utilization of mapper and reducer capacity and 
+occupiedslots.
+=>We monitors users who have access to productionshould running Hadoop jobs
+from their BATCH id.
+=>We monitors Hadoop jobsshould not be consuming more cluster resources. No. of
+Reduce Total count for any jobshould not be more than 500 on production.
+=>WE are monitoring DFS remaining in the cluster.
+=>We also checks for no. of under replicated blocks in thesystem and report to Hadoop
+Infrastructure team.
+Monitoringserver availability using Cloudwatch/Nagios/Ganglia portal.
+=>We monitor CPU usage by access nodes and checks for which process is taking much
+CPU from access node.
+=>We also monitors memory usage of access nodes.
+Monitor and actions on long running jobs on integration and production hadoop cluster,
+analysing delayed jobs affecting the cluster, keeping track on no. of reducers used by jobs, 
+keeping track of users running jobs with own ID on production.
+Monitoring dfs health, andspace issues .Also updating users to clear unnecessaryspace on
+DFS. hdfs-rpt.shscript used to monitorspace on dfs.
+=>If DFS Used% is above 90%, checking which user’s/batch-ID is consuming more data, 
+immediately inform to all the user’s to delete the unwanted data from Production.
+Ex. hdfs dfs -du -s -h /user/a* or hdfs dfs -du -s -h /user/*
+=>If the Dead nodes found in the Monitoring tool, inform to the Hadoop Infra Team Member’s 
+for action.
+If the integration or productionserver isslow, we are provided the access of commands like
+"htop",to update, followup and kill the long running hadoop processes of the 
+user.
+=>If the long job running on the production, more than actual time, we will update to user, 
+after user request we killed the job. 
+Ex: mapred job -kill <job ID>
+mapred job -kill-attempt_201501311747_605710_r_000083_1
+Some time we need toset the job priority, as per theshare request raised by the user
+Ex: Hdfs dfs job -set-priority <job-id> <priority>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
